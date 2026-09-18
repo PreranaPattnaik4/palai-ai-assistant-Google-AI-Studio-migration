@@ -1,0 +1,17 @@
+{
+  "name": "palai-ai-assistant",
+  "version": "1.0.0",
+  "description": "PalAI - Your Personal AI Learning Assistant",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "node -c server.js",
+    "lint": "node -c server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@google/genai": "latest",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}

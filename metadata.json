@@ -1,0 +1,6 @@
+{
+  "name": "PalAI - AI Assistant",
+  "description": "A smart, AI-powered chatbot assistant powered by Gemini to explain concepts, answer questions, and converse.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

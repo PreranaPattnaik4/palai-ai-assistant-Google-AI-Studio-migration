@@ -1,0 +1,28 @@
+[build]
+  command = "npm run build"
+  publish = "public"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Proxy frontend /chat requests to the Netlify serverless Express function
+[[redirects]]
+  from = "/chat"
+  to = "/.netlify/functions/api/chat"
+  status = 200
+
+# Proxy any /api/* requests to the Netlify serverless Express function
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+
+# Fallback for any client routing to index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

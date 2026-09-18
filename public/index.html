@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PalAI - AI Assistant</title>
+  <meta name="description" content="A smart, AI-powered chatbot assistant powered by Gemini to explain concepts, answer questions, and converse." />
+  <meta property="og:title" content="PalAI - AI Assistant" />
+  <meta property="og:description" content="A smart, AI-powered chatbot assistant powered by Gemini to explain concepts, answer questions, and converse." />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #ffffff;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      height: 100vh;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: white;
+      border-left: 1px solid #eee;
+      border-right: 1px solid #eee;
+    }
+
+    .chat-box {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .chat-box::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-box::-webkit-scrollbar-thumb {
+      background-color: #bbb;
+      border-radius: 3px;
+    }
+
+    .user-message,
+    .bot-message {
+      margin: 6px 0;
+      padding: 12px 16px;
+      border-radius: 20px;
+      max-width: 80%;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .user-message {
+      background-color: #DCF8C6;
+      align-self: flex-end;
+    }
+
+    .bot-message {
+      background-color: #F1F0F0;
+      align-self: flex-start;
+    }
+
+    .input-area {
+      display: flex;
+      padding: 12px;
+      border-top: 1px solid #ccc;
+    }
+
+    .input-area input {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      outline: none;
+    }
+
+    .input-area button {
+      padding: 10px 16px;
+      margin-left: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .input-area button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body onload="document.getElementById('user-input').focus();">
+
+  <div class="chat-container">
+    <div class="chat-box" id="chat-box">
+      <div class="bot-message">
+  <p>Hey there! 😊<br>
+  I’m <strong>PalAI</strong> – your friendly AI buddy!<br>
+  I’m here to assist you – whether it's answering questions, giving suggestions, or just having a quick chat.<br>
+  <strong>What would you like to do today?</strong></p>
+</div>
+    </div>
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="Type your message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    const userInput = document.getElementById("user-input");
+
+    userInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function sendMessage() {
+      const message = userInput.value.trim();
+      if (message === "") return;
+
+      // Add user message
+      chatBox.innerHTML += `<div class='user-message'>${escapeHtml(message)}</div>`;
+      userInput.value = "";
+
+      // Typing indicator
+      chatBox.innerHTML += `<div class='bot-message' id="typing">PalAI is typing...</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Fetch from backend
+      fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message })
+      })
+      .then(response => response.json())
+      .then(data => {
+        const typingEl = document.getElementById("typing");
+        if (typingEl) typingEl.remove();
+        chatBox.innerHTML += `<div class='bot-message'>${escapeHtml(data.reply || '')}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      })
+      .catch(error => {
+        const typingEl = document.getElementById("typing");
+        if (typingEl) typingEl.remove();
+        chatBox.innerHTML += `<div class='bot-message'>Oops! Something went wrong.</div>`;
+        console.error("Error:", error);
+      });
+    }
+  </script>
+
+</body>
+</html>

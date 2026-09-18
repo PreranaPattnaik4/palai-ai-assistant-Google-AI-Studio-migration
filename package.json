@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "node server.js",
-    "build": "node -c server.js",
-    "lint": "node -c server.js",
+    "build": "node build.js",
+    "lint": "node -c server.js && node -c app.js && node -c build.js && node -c netlify/functions/api.js",
     "start": "node server.js"
   },
   "dependencies": {
     "@google/genai": "latest",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "serverless-http": "^4.0.0"
   }
 }
